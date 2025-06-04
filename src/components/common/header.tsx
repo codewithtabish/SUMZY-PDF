@@ -5,6 +5,13 @@ import { Button } from '../ui/button'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { ThemeModeToggle } from './mode-toggle-button'
+import Link from 'next/link'
+import { SignedIn, SignedOut, SignInButton,  UserButton } from '@clerk/nextjs'
+import { Badge } from '../ui/badge'
+import { useTheme } from 'next-themes'
+import { dark } from '@clerk/themes'
+import { Upload } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 
 const sections = ['hero-section', 'how-it-work', 'feature', 'feedbacks','pricing']
 
@@ -12,6 +19,9 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState('hero-section')
   const [menuOpen, setMenuOpen] = useState(false)
+  const { resolvedTheme } = useTheme();
+  const clerkTheme = resolvedTheme === 'dark' ? dark : undefined;
+  const pathName=usePathname()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -75,7 +85,7 @@ const Header = () => {
         } transition-all duration-300 py-4 md:px-4 px-6`}
       >
         {/* Logo */}
-        <div className="flex items-center gap-3">
+        <Link href={'/'} className="flex items-center gap-3">
           <Image
             src="/images/header-logo.png"
             alt="header-logo"
@@ -84,10 +94,12 @@ const Header = () => {
             className="object-cover w-10 h-10"
           />
           <h1 className="font-bold text-lg">SUMMARIZER</h1>
-        </div>
+        </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-6 text-sm">
+       {
+        pathName=='/'&&
+         <div className="hidden md:flex items-center gap-6 text-sm">
           {sections.map((id) => (
             <motion.a
               key={id}
@@ -107,14 +119,48 @@ const Header = () => {
             </motion.a>
           ))}
         </div>
+       }
 
         {/* Actions */}
         <div className="hidden md:flex gap-6 items-center">
-          <Button size="sm">Try for free</Button>
+          <SignedIn>
+          <Button size="sm" variant={'ghost'} className='border-[1px] p-1  px-3'>
+            <Link href={'/upload'}>
+            <Upload/>
+            </Link>
+            
+          </Button>
+
+          </SignedIn>
+        <ThemeModeToggle />
+        <div>
+  {/* When user is signed in */}
+  <SignedIn>
+    <UserButton 
+    appearance={{baseTheme:clerkTheme}}
+    />
+    {/* <SignOutButton>
+      <Badge className='cursor-pointer' variant='outline'>
+        <span>Logout</span>
+      </Badge>
+    </SignOutButton> */}
+  </SignedIn>
+
+  {/* When user is signed out */}
+  <SignedOut>
+    <SignInButton>
+      <Badge className='cursor-pointer' variant='outline'>
+        <span>Login</span>
+      </Badge>
+    </SignInButton>
+  </SignedOut>
+</div>
+          {/* check if login or logout */}
+   
         </div>
 
+
         {/* Mobile Theme Toggle */}
-        <ThemeModeToggle />
       </div>
 
       {/* Mobile Menu */}

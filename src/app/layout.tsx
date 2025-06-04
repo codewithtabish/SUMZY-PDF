@@ -3,6 +3,10 @@ import { Source_Sans_3 as FontSans } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/common/header";
 import { ThemeProvider } from "@/components/common/theme-provider";
+import {
+  ClerkProvider,
+ 
+} from '@clerk/nextjs'
 
 const fontSans = FontSans({
   variable: "--font-sans",
@@ -23,6 +27,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <ClerkProvider
+    //  appearance={{
+    //     baseTheme: dark, // Clerk will auto-switch if you provide light/dark themes
+    //     variables: {
+    //       colorPrimary: '#4f46e5', // customize if you want (Tailwind indigo-600)
+    //     },
+    //   }}
+    >
+
     <html lang="en">
       <body
         className={`${fontSans.variable} font-sans antialiased `}
@@ -33,7 +46,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-          <main className="">
+          <main className="md:px-4 px-5">
 
             <Header/>
             {children}
@@ -43,5 +56,6 @@ export default function RootLayout({
         
       </body>
     </html>
+    </ClerkProvider>
   );
 }
