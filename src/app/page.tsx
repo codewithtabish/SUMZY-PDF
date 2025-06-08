@@ -10,7 +10,7 @@ import React from 'react'
 
 const HomePage = () => {
   return (
-    <main className="pt-24 space-y-24">
+    <main className="pt-4 space-y-24">
       <HeroSection/> 
      <HowItWork/>
      

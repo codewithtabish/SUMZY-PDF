@@ -7,6 +7,7 @@ import {
   ClerkProvider,
  
 } from '@clerk/nextjs'
+import { Toaster } from "@/components/ui/sonner";
 
 const fontSans = FontSans({
   variable: "--font-sans",
@@ -50,6 +51,7 @@ export default function RootLayout({
 
             <Header/>
             {children}
+            <Toaster/>
             </main>
            </ThemeProvider>
 

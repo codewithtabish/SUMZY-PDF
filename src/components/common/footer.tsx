@@ -17,7 +17,7 @@ export default function Footer() {
               Lorem ipsum dolor sit amet consectetur. Imperdiet aliquet faucibus malesuada vitae.
             </p>
             <p className="mt-2 text-sm">
-              <span className="font-semibold">(219) 555-0114</span>
+              <span className="font-semibold">(+92) 316 9000 919</span>
             </p>
 
             {/* Social Icons */}

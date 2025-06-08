@@ -9,7 +9,7 @@ const HowItWork = () => {
       {/* Main Title */}
       <div className="text-center mb-12 max-w-3xl mx-auto">
         <h1 className="font-headline text-4xl sm:text-5xl font-bold leading-tight">
-           Your AI PDF Summarizer
+           Your AI PDF Summarizer 
         </h1>
         <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
           Upload your documents, customize your summary, and get clear insights instantly.
