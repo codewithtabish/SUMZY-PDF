@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import UploadFormInput from './upload-form-input'
+import PdfSummary from './pdf-summary'
 import { z } from 'zod'
 import { useUploadThing } from '@/utils/uploadthing'
 import { toast } from 'sonner'
@@ -21,7 +22,6 @@ const schema = z.object({
     }),
 })
 
-// ✅ Define expected response structure
 type UploadResponseItem = {
   serverData: {
     userId: string
@@ -32,15 +32,14 @@ type UploadResponseItem = {
 
 const UploadForm: React.FC = () => {
   const [isUploading, setIsUploading] = useState<boolean>(false)
+  const [pdfSummary, setPdfSummary] = useState<string>('')
 
   const { startUpload } = useUploadThing('pdfUploader', {
     onClientUploadComplete: () => {
-      toast.success('Upload complete', {
-        description: 'Your file has been uploaded successfully.',
-      })
-      setIsUploading(false)
+      // toast.success('Upload complete', {
+      //   description: 'Your file has been uploaded successfully.',
+      // })
 
-      // Reset the form
       const form = document.querySelector('form') as HTMLFormElement | null
       form?.reset()
     },
@@ -83,7 +82,6 @@ const UploadForm: React.FC = () => {
 
     try {
       const uploadResponse = await startUpload([file])
-
       if (!uploadResponse || uploadResponse.length === 0) {
         toast.error('Upload failed', {
           description: 'No response from upload server.',
@@ -92,13 +90,21 @@ const UploadForm: React.FC = () => {
         return
       }
 
-      // ✅ Cast to expected type
       const typedUploadResponse = uploadResponse as UploadResponseItem[]
+      const result = await generatePdfSummary(typedUploadResponse)
 
-      const pdfSummary = await generatePdfSummary(typedUploadResponse)
-      alert('The pdf summary is '+pdfSummary.data?.parsedText.toString())
-
-      console.log('PDF Summary:', pdfSummary)
+      if (!result.success || !result.data) {
+        toast.error('Summary failed', {
+          description: result.message || 'Unable to generate PDF summary.',
+        })
+        setIsUploading(false)
+      } else {
+        setPdfSummary(result.data.summary)
+        setIsUploading(false)
+        toast.success('Summary ready ✨', {
+          description: 'Your PDF summary has been successfully generated!',
+        })
+      }
     } catch (error: unknown) {
       const errMsg = error instanceof Error ? error.message : 'Something went wrong.'
       toast.error('Unexpected error', {
@@ -109,12 +115,13 @@ const UploadForm: React.FC = () => {
   }
 
   return (
-    <div className='md:max-w-3xl mx-auto'>
+    <div className="md:max-w-3xl mx-auto px-4">
       <UploadFormInput
         onSubmit={handleSubmit}
         disabled={isUploading}
         loading={isUploading}
       />
+      <PdfSummary summary={pdfSummary} />
     </div>
   )
 }
@@ -122,23 +129,4 @@ const UploadForm: React.FC = () => {
 export default UploadForm
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// cf@gopayfast.com
