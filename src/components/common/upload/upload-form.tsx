@@ -5,6 +5,7 @@ import UploadFormInput from './upload-form-input'
 import { z } from 'zod'
 import { useUploadThing } from '@/utils/uploadthing'
 import { toast } from 'sonner'
+import { generatePdfSummary } from '@/actions/upload-action'
 
 const MAX_FILE_SIZE_MB = 24
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
@@ -20,6 +21,15 @@ const schema = z.object({
     }),
 })
 
+// ✅ Define expected response structure
+type UploadResponseItem = {
+  serverData: {
+    userId: string
+    fileUrl: string
+    fileName: string
+  }
+}
+
 const UploadForm: React.FC = () => {
   const [isUploading, setIsUploading] = useState<boolean>(false)
 
@@ -27,10 +37,10 @@ const UploadForm: React.FC = () => {
     onClientUploadComplete: () => {
       toast.success('Upload complete', {
         description: 'Your file has been uploaded successfully.',
-      })  
+      })
       setIsUploading(false)
 
-      // Reset the form inputs to clear the file input
+      // Reset the form
       const form = document.querySelector('form') as HTMLFormElement | null
       form?.reset()
     },
@@ -79,12 +89,16 @@ const UploadForm: React.FC = () => {
           description: 'No response from upload server.',
         })
         setIsUploading(false)
-
+        return
       }
 
-      // const pdfSummary=await generarePdfSummary(uploadResponse)
+      // ✅ Cast to expected type
+      const typedUploadResponse = uploadResponse as UploadResponseItem[]
 
-      // No need to show success toast here, handled in onClientUploadComplete
+      const pdfSummary = await generatePdfSummary(typedUploadResponse)
+      alert('The pdf summary is '+pdfSummary.data?.parsedText.toString())
+
+      console.log('PDF Summary:', pdfSummary)
     } catch (error: unknown) {
       const errMsg = error instanceof Error ? error.message : 'Something went wrong.'
       toast.error('Unexpected error', {
@@ -106,3 +120,25 @@ const UploadForm: React.FC = () => {
 }
 
 export default UploadForm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
