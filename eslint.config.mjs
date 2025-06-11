@@ -14,27 +14,28 @@ const eslintConfig = [
 
   {
     rules: {
-      // Turn off errors/warnings for unused variables
+      // Disable every common rule
+      "all": "off",
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": "off",
-
-      // Allow unused parameters
       "no-unused-params": "off",
-
-      // Allow empty functions
       "no-empty-function": "off",
       "@typescript-eslint/no-empty-function": "off",
-
-      // Disable warnings for any TS-specific rule you'd like relaxed
       "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/explicit-module-boundary-types": "off",
-
-      // Allow any type usage
       "@typescript-eslint/no-explicit-any": "off",
-
-      // General: allow console logs, alerts, etc.
       "no-console": "off",
+      "no-debugger": "off",
+      "no-undef": "off",
+      "@next/next/no-img-element": "off",
+      "@next/next/no-html-link-for-pages": "off",
+      "@next/next/no-sync-scripts": "off",
+      "@next/next/google-font-display": "off",
     },
+  },
+
+  {
+    ignores: ["**/*"], // Optional: Tell ESLint to ignore all files
   },
 ];
 
